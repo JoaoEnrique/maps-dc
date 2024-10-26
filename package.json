@@ -1,19 +1,26 @@
 {
-  "name": "DC Maps",
+  "name": "Maps DC",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon src/server.js"
+    "dev": "nodemon src/server.js",
+    "build:css": "postcss public/css/input.css -o public/css/output.css"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "autoprefixer": "^10.4.20",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "express": "^4.21.1",
-    "nodemon": "^3.1.7"
+    "express-handlebars": "^8.0.1",
+    "nodemon": "^3.1.7",
+    "postcss": "^8.4.47"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.14"
   }
 }

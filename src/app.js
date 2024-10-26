@@ -1,13 +1,31 @@
 const cookieParser = require('cookie-parser');
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 const app = express();
+const views = require('./routes/views/routes');
+
+// Configuração do handlebars
+const exphbs = require('express-handlebars');
+app.engine('handlebars', exphbs.engine({
+    defaultLayout: "main",
+    layoutsDir: path.join(__dirname, "views", "layouts"),
+    partialsDir: path.join(__dirname, "views", "layouts") 
+
+}));
+app.set('view engine', 'handlebars');
+app.set('views', path.join(__dirname, "views"));
+
+// Servindo arquivos estáticos
+app.use(express.static('public'));
+app.use(express.urlencoded({ extended: true }));
 
 app.use(cors());
 app.use(cookieParser());
 app.use(express.json());
 
-app.get('/', (req, res) => res.json("Hello World"));
+app.get('/', (req, res) => res.render('index', { title: 'Maps DC' }));
+app.use(views);
 
 // Erro 404
 app.use((req, res, next) => {
