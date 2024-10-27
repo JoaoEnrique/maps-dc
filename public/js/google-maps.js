@@ -164,7 +164,7 @@ map.addListener("click", function (event) {
         $(".btn-calcular").css('display', 'block');
         directionsRenderer.setDirections(result);
       } else {
-        alert("Não foi possível calcular a rota.");
+        // alert("Não foi possível calcular a rota.");
       }
     });
   } else {

@@ -1,8 +1,8 @@
-<main class="container mx-auto px-56 pt-5">
+<main class="container mx-auto px-4 sm:px-10 md:px-20 lg:px-56 max-w-2xl">
     <a href="/calculations/new" class="text-white bg-primary-300 hover:bg-blue-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">Novo</a>
 
-    <div class="list mt-5">
-        
+    <div class="list mt-5 grid grid-cols-1 gap-5">
+        <!-- As listagens de cálculos serão injetadas aqui -->
     </div>
 
     <script type="module">
@@ -21,7 +21,6 @@
                 const response = await fetch(`/calculation?userId=${user.uid}`);
                 const data = await response.json();
 
-                               
                 if (!response.ok) {
                     throw new Error(data.error);
                 }
@@ -35,10 +34,27 @@
                     calculationDiv.onclick = () => {
                         window.location.href = `/calculations/edit/${calculation.id}`;
                     };
+                    const createdAtDate = new Date(calculation.createdAt._seconds * 1000);
+                    const formattedDate = createdAtDate.toLocaleDateString('pt-BR', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                    });
+
                     calculationDiv.innerHTML = `
-                        <h2 class="text-lg font-semibold">${calculation.origem} para ${calculation.destino}</h2>
-                        <p class="text-gray-600">Consumo: ${calculation.consumo_combustivel} L</p>
-                        <p class="text-gray-600">Preço do Combustível: R$ ${calculation.preco_combustivel}</p>
+                        <div class="flex justify-between items-center">
+                            <h2 class="text-lg font-semibold" style="overflow: hidden;">
+                                <p style="text-wrap: nowrap;">${calculation.origem}</p>
+                                <p style="text-wrap: nowrap;">${calculation.destino}</p>
+                            </h2>
+                        </div>
+                            <span class="text-gray-500 text-sm">${formattedDate}</span>
+                        <div class="flex justify-between items-center">
+                            <p class="text-gray-600">Consumo: <strong>${parseFloat(calculation.consumo).toFixed(2)} L</strong></p>
+                            <p class="text-gray-600">Distância: <strong>${parseFloat(calculation.distancia).toFixed(2)} KM</strong></p>
+                        </div>
+                        <p class="text-gray-600">Gasto do Combustível: <strong>R$ ${parseFloat(calculation.valor).toFixed(2)}</strong></p>
+                        <p class="text-gray-600">Modalidade: <strong>${calculation.locomocao}</strong></p>
                     `;
                     listContainer.appendChild(calculationDiv);
                 });

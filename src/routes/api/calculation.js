@@ -33,9 +33,9 @@ router.get('/calculation', async (req, res) => {
 
 
 router.post('/calculation', async (req, res) => {
-    const { userId, origem, destino, consumo_combustivel, preco_combustivel, locomocao } = req.body;
+    const { userId, origem, destino, consumo_combustivel, preco_combustivel, locomocao, distancia, valor, consumo } = req.body;
 
-    if (!userId || !origem || !destino || !consumo_combustivel || !preco_combustivel || !locomocao) {
+    if (!userId || !origem || !destino || !consumo_combustivel || !preco_combustivel || !locomocao || !distancia || !valor || !consumo) {
         return res.status(400).json({ error: 'Todos os campos são obrigatórios.' });
     }
 
@@ -48,6 +48,9 @@ router.post('/calculation', async (req, res) => {
             consumo_combustivel,
             preco_combustivel,
             locomocao,
+            distancia,
+            consumo,
+            valor,
             createdAt: firebaseAdmin.firestore.FieldValue.serverTimestamp(),
         });
 
@@ -59,9 +62,9 @@ router.post('/calculation', async (req, res) => {
 
 router.put('/calculation/:id', async (req, res) => {
     const { id } = req.params; // Obtém o ID do cálculo da URL
-    const { userId, origem, destino, consumo_combustivel, preco_combustivel, locomocao } = req.body;
+    const { userId, origem, destino, consumo_combustivel, preco_combustivel, locomocao, distancia, valor, consumo } = req.body;
 
-    if (!userId || !origem || !destino || !consumo_combustivel || !preco_combustivel || !locomocao) {
+    if (!userId || !origem || !destino || !consumo_combustivel || !preco_combustivel || !locomocao || !distancia || !valor || !consumo) {
         return res.status(400).json({ error: 'Todos os campos são obrigatórios.' });
     }
 
@@ -76,6 +79,9 @@ router.put('/calculation/:id', async (req, res) => {
             consumo_combustivel,
             preco_combustivel,
             locomocao,
+            distancia,
+            valor,
+            consumo,
             updatedAt: firebaseAdmin.firestore.FieldValue.serverTimestamp(), // Opcional: data da atualização
         });
 
