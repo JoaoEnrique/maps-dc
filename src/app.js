@@ -3,8 +3,14 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const app = express();
-const views = require('./routes/views/routes');
+
+// rotas view
+const authView = require('./routes/views/auth');
+const calculationView = require('./routes/views/calculation');
+
+// rotas api
 const auth = require('./routes/api/auth');
+const calculation = require('./routes/api/calculation');
 
 const session = require('express-session');
 app.use(session({
@@ -33,14 +39,18 @@ app.use(cookieParser());
 app.use(express.json());
 
 app.get('/', (req, res) => res.render('index', { title: 'Maps DC' }));
-app.use(views);
+
+// VIEW
+app.use(authView);
+app.use(calculationView);
 
 // API
 app.use(auth);
+app.use(calculation);
 
 // Erro 404
 app.use((req, res, next) => {
     res.render('errors/404', { title: 'Maps DC - Página não encontrada' })
-});
+}); 
 
 module.exports = app;

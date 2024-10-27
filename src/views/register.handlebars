@@ -48,7 +48,7 @@
                 }
 
                 // Autentica automaticamente o usuário no front-end e armazena no localStorage
-                await authenticateUser(email, password);
+                await authenticateUser(email, password, false);
                 successMessage("Conta criada");
                 window.location.href = '/';
 
