@@ -11,10 +11,17 @@
                 <li><a href="/register" class="logged-out bg-white p-2 rounded-lg text-primary-300 hover:underline">Criar Conta</a></li>
                 <li><a href="/login" class="logged-out text-white hover:underline">Login</a></li>
 
-                <li class="user-menu" style="display: none;">
-                    <span id="user-greeting" class="text-white"></span>
+
+                <li class="user-menu items-center" style="display: none;">
+                    <a href="/calculations" class="bg-white p-2 rounded-lg text-primary-300 ">Calcular</a>
                 </li>
-                <li class="user-menu" style="display: none;">
+
+                {{!-- nome de usuário --}}
+                <li class="user-menu items-center" style="display: none;">
+                    <span id="user-greeting" class="text-white "></span>
+                </li>
+
+                <li class="user-menu items-center" style="display: none;">
                     <a href="#" onclick="logout()" class="text-white hover:underline">Logout</a>
                 </li>
             </ul>
@@ -25,13 +32,19 @@
 <script>
     // Verifica se o usuário está logado
     window.addEventListener('DOMContentLoaded', () => {
-        const loggedUser = JSON.parse(localStorage.getItem('user'));
+        try {
+            loggedUser = JSON.parse(localStorage.getItem('user'));
+        } catch (error) {
+            loggedUser = null;
+        }
+
         const userMenu = document.querySelectorAll('.user-menu');
         const loggedOutMenu = document.querySelectorAll('.logged-out');
         const userGreeting = document.getElementById('user-greeting');
 
         if (loggedUser) {
-            userGreeting.textContent = `${loggedUser.email}`; // Exibe o email do usuário
+            const username = loggedUser.email.split('@')[0]; // Remove o domínio do email
+            userGreeting.textContent = `${username}`; // Exibe o nome do usuário
 
             userMenu.forEach(e =>{
                 e.style.display = 'flex'; // Mostra o menu do usuário

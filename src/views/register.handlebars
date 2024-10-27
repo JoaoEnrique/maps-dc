@@ -16,7 +16,11 @@
     <script>
         // Verifica se o usuário já está logado ao carregar a página
         window.addEventListener('DOMContentLoaded', () => {
-            const loggedUser = JSON.parse(localStorage.getItem('user'));
+            try {
+                loggedUser = JSON.parse(localStorage.getItem('user'));
+            } catch (error) {
+                loggedUser = null;
+            }
             if (loggedUser) {
                 window.location.href = '/'; // Redireciona se o usuário já estiver logado
             }

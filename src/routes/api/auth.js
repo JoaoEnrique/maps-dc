@@ -11,7 +11,7 @@ router.post('/signup', async (req, res) => {
     }
 
     try {
-        const userRecord = await firebaseAdmin.auth().createUser({
+        await firebaseAdmin.auth().createUser({
             email: email,
             password: password,
         });
@@ -19,24 +19,6 @@ router.post('/signup', async (req, res) => {
         return res.status(201).json({ message: 'Conta criada com sucesso!', email, password });
     } catch (error) {
         return res.status(500).json({ error: error.message });
-    }
-});
-
-router.post('/login', async (req, res) => {
-    const { email, password } = req.body; // Obtenha os dados do corpo da requisição
-    if (!email || !password) {
-        req.session.errorMessage = 'Email e senha são obrigatórios.';
-        return res.redirect('login');
-    }   
-
-    try {
-        const userCredential = firebase.auth().signInWithEmailAndPassword(email, password);
-        req.session.user = userCredential.user;
-        req.session.successMessage = "Login realizado com sucesso!";
-       return res.redirect('/');
-    } catch (error) {
-        req.session.errorMessage = error.message;
-        return res.redirect('login');
     }
 });
 

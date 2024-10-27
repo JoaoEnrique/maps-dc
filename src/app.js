@@ -40,10 +40,7 @@ app.use(auth);
 
 // Erro 404
 app.use((req, res, next) => {
-    res.status(404).json({
-        error: 'Rota não encontrada',
-        status: 404
-    });
+    res.render('errors/404', { title: 'Maps DC - Página não encontrada' })
 });
 
 module.exports = app;

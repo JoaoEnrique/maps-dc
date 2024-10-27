@@ -16,6 +16,12 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
 
     <script src="/js/firestore.js"></script>
+
+    <style>
+        body{
+            display: none;
+        }
+    </style>
 </head>
 
 <body class="bg-gray-50">
@@ -26,5 +32,11 @@
 
     {{{body}}}
     {{>footer}}
+
+    <script defer>
+        window.addEventListener('DOMContentLoaded', ()=>{
+            document.querySelector('body').style.display = 'block'
+        })
+    </script>
 </body>
 </html>

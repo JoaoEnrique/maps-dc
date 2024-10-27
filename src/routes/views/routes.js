@@ -12,23 +12,25 @@ router.get('/login', (req, res) => {
     if (token) {
         res.status(301).redirect('/');
     } else {
-        res.render('login', { title: 'Login', errorMessage, successMessage });
+        res.render('login', { title: 'Maps DC - Login', errorMessage, successMessage });
     }
 })
 
 router.get('/register', (req, res) => {
     const { token } = req.cookies;
-    const errorMessage = req.session.errorMessage;
-    const successMessage = req.session.successMessage;
-    req.session.errorMessage = null; // Limpa a mensagem após exibi-la
-    req.session.successMessage = null; // Limpa a mensagem após exibi-la
-
     if (token) {
         res.status(301).redirect('/');
     } else {
-        res.render('register', { title: 'Criar Conta', errorMessage, successMessage });
+        res.render('register', { title: 'Maps DC - Criar Conta' });
     }
 })
+
+
+
+router.get('/calculations', (req, res) => {
+    res.render('calculations', { title: 'Maps DC - Meus calculos'});
+})
+
 
 
 module.exports = router;
