@@ -1,6 +1,6 @@
-<main class="container mx-auto px-56">
-    <form id="loginForm" class="bg-white px-10 pb-10 pt-10 mx-auto" method="POST" action="/login">
-        <h1 class="text-center text-4xl mb-10">Login</h1>
+<main class="container mx-auto px-4 sm:px-10 md:px-20 lg:px-56 max-w-2xl">
+    <form id="loginForm" class="bg-white shadow-lg rounded-lg px-6 sm:px-8 py-8 sm:py-12 mx-auto mt-8 mb-10">
+        <h1 class="text-center text-2xl sm:text-3xl md:text-4xl font-semibold text-gray-800 mb-8 sm:mb-10">Login</h1>
 
         <div class="mb-5">
             <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
@@ -16,39 +16,34 @@
             </div>
             <label for="remember" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Lembrar conta</label>
         </div>
-        <button type="submit" class="text-white bg-blue-500 hover:bg-blue-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">Login</button>
+        <button class="text-white bg-primary-300 hover:bg-primary-400 focus:bg-primary-500 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">
+            Login
+        </button>
     </form>
 
     <!-- Scripts para autenticação -->
-    <script>
-        async function authenticateUser(email, password) {
-            const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
-            const user = userCredential.user;
-            localStorage.setItem('user', JSON.stringify({ uid: user.uid, email: user.email })); // Salva o usuário no localStorage
-            return user;
-        }
+    <script type="module">
+        import { authenticateUser, getUserLogged, isLoggedUser } from '/js/utils/auth.js';
+        import { errorMessage } from '/js/utils/message.js';
 
         window.addEventListener('DOMContentLoaded', () => {
-            const loggedUser = JSON.parse(localStorage.getItem('user'));
-            if (loggedUser) {
+            if (isLoggedUser()) {
                 window.location.href = '/'; // Redireciona se o usuário já estiver logado
             }
         });
 
-        // Captura o evento de envio do formulário
         document.getElementById('loginForm').addEventListener('submit', async function(e) {
-            e.preventDefault(); // Impede o comportamento padrão do formulário
+            e.preventDefault();
 
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
+            const remember = document.getElementById('remember').checked;
 
             try {
-                await authenticateUser(email, password);
+                await authenticateUser(email, password, remember);
                 window.location.href = '/';
             } catch (error) {
-                document.querySelector(".error-message").style.display = 'block';
-                document.querySelector(".success-message").style.display = 'none';
-                document.querySelector(".error-message-text").innerHTML = error.message;
+                errorMessage(error);
             }
         });
     </script>

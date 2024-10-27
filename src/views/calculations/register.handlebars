@@ -1,0 +1,60 @@
+<main class="container mx-auto px-4 sm:px-10 md:px-20 lg:px-56 max-w-2xl">
+    <form id="signupForm" class="bg-white shadow-lg rounded-lg px-6 sm:px-8 py-8 sm:py-12 mx-auto mt-8 mb-10">
+        <h1 class="text-center text-2xl sm:text-3xl md:text-4xl font-semibold text-gray-800 mb-8 sm:mb-10">Novo Cálculo</h1>
+
+        <div id="map" class="h-52 sm:h-64 w-full mb-8 border rounded-lg shadow-sm"></div>
+
+        <!-- Campos de Origem e Destino -->
+        <div class="flex flex-col sm:flex-row gap-4 sm:gap-5 mb-8">
+            <div class="flex-1">
+                <label for="origem" class="block mb-2 text-sm font-medium text-gray-700">Origem</label>
+                <input type="text" id="origem" class="verificar-valor-deslocamento bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-3" placeholder="Digite a origem" required />
+            </div>
+            <div class="flex-1">
+                <label for="destino" class="block mb-2 text-sm font-medium text-gray-700">Destino</label>
+                <input type="text" id="destino" class="verificar-valor-deslocamento bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-3" placeholder="Digite o destino" required />
+            </div>
+        </div>
+
+        <!-- Campos de Consumo e Preço de Combustível -->
+        <div class="flex flex-col sm:flex-row gap-4 sm:gap-5 mb-8">
+            <div class="flex-1">
+                <label for="consumo_combustivel" class="block mb-2 text-sm font-medium text-gray-700">Média de Consumo de Combustível (km/l)</label>
+                <input value="5" type="text" id="consumo_combustivel" class="verificar-valor-deslocamento bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-3" placeholder="Digite o consumo médio" required />
+            </div>
+            <div class="flex-1">
+                <label for="preco_combustivel" class="block mb-2 text-sm font-medium text-gray-700">Preço do Combustível (R$/l)</label>
+                <input value="5" type="text" id="preco_combustivel" class="verificar-valor-deslocamento bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-3" placeholder="Digite o preço" required />
+            </div>
+        </div>
+
+        <!-- Seção de resultado -->
+        <div id="resultado" class="mb-8 p-4 rounded-lg bg-gray-100 shadow-sm">
+            <!-- Aqui será exibido o resultado -->
+        </div>
+
+        <button class="btn-atualizar-deslocamento text-white bg-primary-300 hover:bg-primary-500 focus:ring-4 focus:outline-none focus:ring-blue-300 font-semibold rounded-lg text-lg w-full md:w-auto px-6 py-3 shadow-md">
+            Calcular
+        </button>
+    </form>
+
+    <script src="https://maps.googleapis.com/maps/api/js?key={{API_KEY_MAPS}}&libraries=places"></script>
+    <script src="/js/google-api.js"></script>
+    <script src="/js/google-maps.js"></script>
+
+    <script type="module">
+        import { isLoggedUser } from '/js/utils/auth.js';
+        // Verifica se o usuário já está logado ao carregar a página
+         window.addEventListener('DOMContentLoaded', () => {
+            if (!isLoggedUser()) {
+                window.location.href = '/'; // Redireciona se o usuário já estiver logado
+            }
+        });
+
+        // Captura o evento de envio do formulário
+        document.getElementById('signupForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            // Adicionar lógica de envio do formulário
+        });
+    </script>
+</main>

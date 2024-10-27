@@ -15,6 +15,9 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
 
+    <!-- jquery -->
+    <script src="/js/jquery/jquery.js"></script>
+
     <script src="/js/firestore.js"></script>
 
     <style>
@@ -27,8 +30,10 @@
 <body class="bg-gray-50">
     {{>navbar}}
 
-    {{>errorMessage}}{{!-- mensagem de erro --}}
-    {{>successMessage}}{{!-- mensagem de sucesso --}}
+    <div class="container mx-auto px-4 sm:px-10 md:px-20 lg:px-56 max-w-2xl mt-5">
+        {{>errorMessage}}{{!-- mensagem de erro --}}
+        {{>successMessage}}{{!-- mensagem de sucesso --}}
+    </div>
 
     {{{body}}}
     {{>footer}}
