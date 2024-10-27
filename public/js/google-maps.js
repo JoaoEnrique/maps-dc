@@ -2,6 +2,8 @@ var origemAutocomplete;
 var destinoAutocomplete;
 var origemMarker = null;
 var destinoMarker = null;
+var geocoder = new google.maps.Geocoder();
+
 
 var map = new google.maps.Map(document.getElementById("map"), {
   center: { lat: -23.5505, lng: -46.6333 },
@@ -110,20 +112,46 @@ function initAutocomplete() {
 
 map.addListener("click", function (event) {
   if (origemMarker == null) {
+    // Criar o marcador de origem
     origemMarker = new google.maps.Marker({
       position: event.latLng,
       map: map,
     });
-    document.getElementById("origem").value =
-      event.latLng.lat() + ", " + event.latLng.lng();
+
+    // Usar Geocoding para obter o endereço
+    geocoder.geocode({ location: event.latLng }, function (results, status) {
+      if (status === "OK") {
+        if (results[0]) {
+          document.getElementById("origem").value = results[0].formatted_address; // Usar o endereço formatado
+        } else {
+          alert("Nenhum resultado encontrado");
+        }
+      } else {
+        alert("Geocoder falhou devido ao seguinte: " + status);
+      }
+    });
   } else if (destinoMarker == null) {
+    // Criar o marcador de destino
     destinoMarker = new google.maps.Marker({
       position: event.latLng,
       map: map,
     });
+
+    // Usar Geocoding para obter o endereço
+    geocoder.geocode({ location: event.latLng }, function (results, status) {
+      if (status === "OK") {
+        if (results[0]) {
+          document.getElementById("destino").value = results[0].formatted_address; // Usar o endereço formatado
+        } else {
+          alert("Nenhum resultado encontrado");
+        }
+      } else {
+        alert("Geocoder falhou devido ao seguinte: " + status);
+      }
+    });
+
+    // Calcular a rota
     var travelMode = document.getElementById("locomocao").value;
-    document.getElementById("destino").value =
-      event.latLng.lat() + ", " + event.latLng.lng();
     var directionsService = new google.maps.DirectionsService();
     var request = {
       origin: document.getElementById("origem").value,
@@ -133,13 +161,14 @@ map.addListener("click", function (event) {
 
     directionsService.route(request, function (result, status) {
       if (status == "OK") {
-        $(".btn-calcular").css('display', 'block')
+        $(".btn-calcular").css('display', 'block');
         directionsRenderer.setDirections(result);
       } else {
         alert("Não foi possível calcular a rota.");
       }
     });
   } else {
+    // Se ambos os marcadores já estiverem definidos, redefinir
     origemMarker.setMap(null);
     destinoMarker.setMap(null);
     origemMarker = new google.maps.Marker({
@@ -147,8 +176,18 @@ map.addListener("click", function (event) {
       map: map,
     });
     destinoMarker = null;
-    document.getElementById("origem").value =
-      event.latLng.lat() + ", " + event.latLng.lng();
+    // Repetir o processo de geocoding para a nova origem
+    geocoder.geocode({ location: event.latLng }, function (results, status) {
+      if (status === "OK") {
+        if (results[0]) {
+          document.getElementById("origem").value = results[0].formatted_address;
+        } else {
+          alert("Nenhum resultado encontrado");
+        }
+      } else {
+        alert("Geocoder falhou devido ao seguinte: " + status);
+      }
+    });
     document.getElementById("destino").value = "";
     directionsRenderer.set("directions", null);
   }
