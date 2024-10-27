@@ -8,11 +8,11 @@
         <div class="flex flex-col sm:flex-row gap-4 sm:gap-5 mb-8">
             <div class="flex-1">
                 <label for="origem" class="block mb-2 text-sm font-medium text-gray-700">Origem</label>
-                <input type="text" id="origem" class="verificar-valor-deslocamento bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-3" placeholder="Digite a origem" required />
+                <input value="{{calculation.origem}}" type="text" id="origem" class="verificar-valor-deslocamento bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-3" placeholder="Digite a origem" required />
             </div>
             <div class="flex-1">
                 <label for="destino" class="block mb-2 text-sm font-medium text-gray-700">Destino</label>
-                <input type="text" id="destino" class="verificar-valor-deslocamento bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-3" placeholder="Digite o destino" required />
+                <input value="{{calculation.destino}}" type="text" id="destino" class="verificar-valor-deslocamento bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-3" placeholder="Digite o destino" required />
             </div>
         </div>
 
@@ -20,11 +20,11 @@
         <div class="flex flex-col sm:flex-row gap-4 sm:gap-5 mb-8">
             <div class="flex-1">
                 <label for="consumo_combustivel" class="block mb-2 text-sm font-medium text-gray-700">Média de Consumo de Combustível (km/l)</label>
-                <input value="5" type="text" id="consumo_combustivel" class="verificar-valor-deslocamento bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-3" placeholder="Digite o consumo médio" required />
+                <input value="{{calculation.consumo_combustivel}}" type="text" id="consumo_combustivel" class="verificar-valor-deslocamento bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-3" placeholder="Digite o consumo médio" required />
             </div>
             <div class="flex-1">
                 <label for="preco_combustivel" class="block mb-2 text-sm font-medium text-gray-700">Preço do Combustível (R$/l)</label>
-                <input value="5" type="text" id="preco_combustivel" class="verificar-valor-deslocamento bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-3" placeholder="Digite o preço" required />
+                <input value="{{calculation.preco_combustivel}}" type="text" id="preco_combustivel" class="verificar-valor-deslocamento bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-3" placeholder="Digite o preço" required />
             </div>
         </div>
 
@@ -52,17 +52,22 @@
         <input type="hidden" name="consumo" id="consumo" value="0">
         <input type="hidden" name="valor" id="valor" value="0">
         <input type="hidden" name="valor_ida_volta" id="valor_ida_volta" value="0">
+        <input type="hidden" name="is_edit" id="is_edit" value="{{#if isEdit }}1{{else}}0{{/if}}">
 
         <div class="flex gap-2">
             <button id="salvar-calculo" style="display: none;" class="btn-salvar text-white bg-blue-800 hover:bg-primary-500 focus:ring-4 focus:outline-none focus:ring-blue-300 font-semibold rounded-lg text-lg w-full md:w-auto px-6 py-3 shadow-md">
                 Salvar
             </button>
 
-            <button  class="btn-calcular text-white bg-primary-300 hover:bg-primary-500 focus:ring-4 focus:outline-none focus:ring-blue-300 font-semibold rounded-lg text-lg w-full md:w-auto px-6 py-3 shadow-md">
+            <button class="btn-calcular text-white bg-primary-300 hover:bg-primary-500 focus:ring-4 focus:outline-none focus:ring-blue-300 font-semibold rounded-lg text-lg w-full md:w-auto px-6 py-3 shadow-md">
                 Calcular
+            </button>
+            <button id="excluir-calculo" style="display: {{#if isEdit }}block{{else}}none{{/if}};" class="btn-excluir text-white bg-red-600 hover:bg-red-500 focus:ring-4 focus:outline-none focus:ring-red-300 font-semibold rounded-lg text-lg w-full md:w-auto px-6 py-3 shadow-md">
+                Excluir
             </button>
         </div>
     </form>
+
 
     <script src="https://maps.googleapis.com/maps/api/js?key={{API_KEY_MAPS}}&libraries=places"></script>
     <script src="/js/google-api.js"></script>
@@ -124,6 +129,9 @@
 
                 if (response.ok) {
                     successMessage(data.message); // Mostra mensagem de sucesso
+                    setTimeout(() =>{
+                        window.location.href = `/calculations/edit/${data.calculationId}`;
+                    }, 1000);
                 } else {
                     throw new Error(data.error);
                 }
@@ -131,5 +139,41 @@
                 errorMessage('Erro ao salvar cálculo: ' + error.message);
             }
         });
+
+
+        document.querySelector('.btn-calcular').addEventListener('click', async function(e) {
+            console.log("aaa")
+        });
+
+        //excluir
+        document.getElementById('excluir-calculo').addEventListener('click', async function(e) {
+            e.preventDefault();
+
+            const confirmation = confirm('Você tem certeza que deseja excluir este cálculo?');
+            if (!confirmation) return; // Se o usuário cancelar a exclusão, não faz nada
+
+            const calculationId = "{{calculation.id}}"; // Obtém o ID do cálculo que está sendo editado
+
+            try {
+                const response = await fetch(`/calculation/${calculationId}`, {
+                    method: 'DELETE',
+                });
+
+                const errorData = await response.json();
+
+                if (response.ok) {
+                    successMessage("Calculo excluido")
+                    setTimeout(() =>{
+                        window.location.href = '/calculations'; // Redireciona após excluir
+                    }, 1000);
+                } else {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error);
+                }
+            } catch (error) {
+                errorMessage('Erro ao excluir cálculo: ' + error.message);
+            }
+        });
+
     </script>
 </main>

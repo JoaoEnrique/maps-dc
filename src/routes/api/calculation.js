@@ -1,7 +1,7 @@
 const express = require('express');
 const firebaseAdmin = require('firebase-admin');
 const router = express.Router();
-require('../../firebase'); // Certifique-se que esta configuração inicializa o Firebase Admin SDK
+require('../../firebase'); 
 
 // Rota para listar cálculos do usuário logado
 router.get('/calculation', async (req, res) => {
@@ -16,7 +16,7 @@ router.get('/calculation', async (req, res) => {
         const calculationsSnapshot = await db.collection('calculations').where('userId', '==', userId).get();
         
         if (calculationsSnapshot.empty) {
-            return res.status(404).json({ message: 'Nenhum cálculo encontrado.' });
+            return res.status(400).json({ error: 'Nenhum cálculo encontrado.' });
         }
 
         const calculations = [];
@@ -41,7 +41,7 @@ router.post('/calculation', async (req, res) => {
 
     try {
         const db = firebaseAdmin.firestore();
-        await db.collection('calculations').add({
+        const docRef = await db.collection('calculations').add({
             userId,
             origem,
             destino,
@@ -51,10 +51,23 @@ router.post('/calculation', async (req, res) => {
             createdAt: firebaseAdmin.firestore.FieldValue.serverTimestamp(),
         });
 
-        return res.status(201).json({ message: 'Cálculo salvo com sucesso!' });
+        return res.status(201).json({ message: 'Cálculo salvo com sucesso!', calculationId: docRef.id });
     } catch (error) {
         return res.status(500).json({ error: error.message });
     }
 });
+
+router.delete('/calculation/:id', async (req, res) => {
+    const calculationId = req.params.id;
+
+    try {
+        const db = firebaseAdmin.firestore();
+        await db.collection('calculations').doc(calculationId).delete();
+        return res.status(200).json({ message: 'Cálculo excluído com sucesso!' });
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
+});
+
 
 module.exports = router;

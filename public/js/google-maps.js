@@ -188,7 +188,7 @@ function mostrarPrecoCombustivel(distancia, distanciaIdaVolta, consumoCombustive
     $("#valor_ida_volta").val(valorCombustivelIdaVolta);
 
     $(".btn-fechar-deslocamento").css('display', 'none')
-    $(".btn-salvar").css('display', 'block')
+    if($("#is_edit").val() == 0) $(".btn-salvar").css('display', 'block')
 }
 
 if(document.querySelector('#calculationForm')) document.querySelector('#calculationForm').addEventListener('submit', calcularDeslocamento);
@@ -199,7 +199,7 @@ document.querySelectorAll('.verificar-valor-deslocamento').forEach(e=>{//mostra 
 function verificarValorDeslocamento(){
   $(".btn-calcular").css('display', 'block')
   $(".btn-fechar-deslocamento").css('display', 'block')
-  $(".btn-salvar").css('display', 'none')
+  if(!$("#is_edit").val()) $(".btn-salvar").css('display', 'none')
 }
 
 initAutocomplete();
