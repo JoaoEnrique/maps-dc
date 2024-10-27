@@ -31,7 +31,7 @@ router.get('/calculations/edit/:id', async (req, res) => {
         const calculationDoc = await db.collection('calculations').doc(calculationId).get();
 
         if (!calculationDoc.exists) {
-            return res.status(404).json({ error: 'Cálculo não encontrado.' });
+            return res.render('errors/404');
         }
 
         const calculationData = calculationDoc.data();

@@ -57,6 +57,35 @@ router.post('/calculation', async (req, res) => {
     }
 });
 
+router.put('/calculation/:id', async (req, res) => {
+    const { id } = req.params; // Obtém o ID do cálculo da URL
+    const { userId, origem, destino, consumo_combustivel, preco_combustivel, locomocao } = req.body;
+
+    if (!userId || !origem || !destino || !consumo_combustivel || !preco_combustivel || !locomocao) {
+        return res.status(400).json({ error: 'Todos os campos são obrigatórios.' });
+    }
+
+    try {
+        const db = firebaseAdmin.firestore();
+        const docRef = db.collection('calculations').doc(id); // Referência ao cálculo específico
+
+        // Atualiza o documento
+        await docRef.update({
+            origem,
+            destino,
+            consumo_combustivel,
+            preco_combustivel,
+            locomocao,
+            updatedAt: firebaseAdmin.firestore.FieldValue.serverTimestamp(), // Opcional: data da atualização
+        });
+
+        return res.status(200).json({ message: 'Cálculo atualizado com sucesso!' });
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
+});
+
+
 router.delete('/calculation/:id', async (req, res) => {
     const calculationId = req.params.id;
 

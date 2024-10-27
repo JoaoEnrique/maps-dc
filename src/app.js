@@ -24,9 +24,14 @@ const exphbs = require('express-handlebars');
 app.engine('handlebars', exphbs.engine({
     defaultLayout: "main",
     layoutsDir: path.join(__dirname, "views", "layouts"),
-    partialsDir: path.join(__dirname, "views", "layouts") 
+    partialsDir: path.join(__dirname, "views", "layouts"),
+    helpers: {
+        equals: (a, b) => a === b,
+    },
 
 }));
+
+
 app.set('view engine', 'handlebars');
 app.set('views', path.join(__dirname, "views"));
 
