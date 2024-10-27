@@ -1,19 +1,54 @@
 <main class="container mx-auto px-56 pt-5">
     <a href="/calculations/new" class="text-white bg-primary-300 hover:bg-blue-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">Novo</a>
 
-   <div class="list mt-5 rounded-lg">
-        <div class="bg-white py-5 px-10">
-            a
-        </div>
-   </div>
+    <div class="list mt-5">
+        
+    </div>
 
     <script type="module">
-        import { isLoggedUser } from '/js/utils/auth.js';
+        import { isLoggedUser, getUserLogged } from '/js/utils/auth.js';
+        import { errorMessage } from '/js/utils/message.js';
 
         window.addEventListener('DOMContentLoaded', () => {
             if (!isLoggedUser()) {
-                window.location.href = '/'; // Redireciona se o usuário já estiver logado
+                window.location.href = '/'; // Redireciona se o usuário não estiver logado
             }
         });
+
+        async function loadCalculations() {
+            try {
+                const user = getUserLogged();
+                const response = await fetch(`/calculation?userId=${user.uid}`);
+                const data = await response.json();
+
+                               
+                if (!response.ok) {
+                    throw new Error(data.error);
+                }
+
+                const listContainer = document.querySelector('.list');
+                listContainer.innerHTML = ''; // Limpa a lista atual
+
+                data.forEach(calculation => {
+                    const calculationDiv = document.createElement('div');
+                    calculationDiv.className = 'bg-white shadow-md rounded-lg p-5 mb-4 hover:bg-gray-100 cursor-pointer transition duration-200';
+                    calculationDiv.onclick = () => {
+                        window.location.href = `/calculations/edit/${calculation.id}`;
+                    };
+                    calculationDiv.innerHTML = `
+                        <h2 class="text-lg font-semibold">${calculation.origem} para ${calculation.destino}</h2>
+                        <p class="text-gray-600">Consumo: ${calculation.consumo_combustivel} L</p>
+                        <p class="text-gray-600">Preço do Combustível: R$ ${calculation.preco_combustivel}</p>
+                    `;
+                    listContainer.appendChild(calculationDiv);
+                });
+            } catch (error) {
+                console.error(error);
+                errorMessage('Erro: ' + error.message);
+            }
+        }
+
+        // Chama a função ao carregar a página
+        window.onload = loadCalculations;
     </script>
 </main>
