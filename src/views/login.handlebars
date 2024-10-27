@@ -1,3 +1,55 @@
-<main>
-    Hello World
+<main class="container mx-auto px-56">
+    <form id="loginForm" class="bg-white px-10 pb-10 pt-10 mx-auto" method="POST" action="/login">
+        <h1 class="text-center text-4xl mb-10">Login</h1>
+
+        <div class="mb-5">
+            <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
+            <input type="email" id="email" name="email" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-300 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-300 dark:focus:border-primary-300" placeholder="nome@gmail.com" required />
+        </div>
+        <div class="mb-5">
+            <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Senha</label>
+            <input type="password" id="password" name="password" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required />
+        </div>
+        <div class="flex items-start mb-5">
+            <div class="flex items-center h-5">
+                <input id="remember" type="checkbox" class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800"/>
+            </div>
+            <label for="remember" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Lembrar conta</label>
+        </div>
+        <button type="submit" class="text-white bg-blue-500 hover:bg-blue-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">Login</button>
+    </form>
+
+    <!-- Scripts para autenticação -->
+    <script>
+        async function authenticateUser(email, password) {
+            const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
+            const user = userCredential.user;
+            localStorage.setItem('user', JSON.stringify({ uid: user.uid, email: user.email })); // Salva o usuário no localStorage
+            return user;
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const loggedUser = JSON.parse(localStorage.getItem('user'));
+            if (loggedUser) {
+                window.location.href = '/'; // Redireciona se o usuário já estiver logado
+            }
+        });
+
+        // Captura o evento de envio do formulário
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault(); // Impede o comportamento padrão do formulário
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                await authenticateUser(email, password);
+                window.location.href = '/';
+            } catch (error) {
+                document.querySelector(".error-message").style.display = 'block';
+                document.querySelector(".success-message").style.display = 'none';
+                document.querySelector(".error-message-text").innerHTML = error.message;
+            }
+        });
+    </script>
 </main>

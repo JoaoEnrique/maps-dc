@@ -1,15 +1,54 @@
-<header class="bg-primary-300 text-white w-full z-10">
-    <div class="container mx-auto flex justify-between items-center">
+<header class="bg-primary-300 w-full z-10">
+    <div class="px-10 container mx-auto flex justify-between items-center">
         <a href="/">
             <div class="flex gap-5">
-                    <img src="/img/logo_transparent.png" class="logo-nav" srcset=""> 
-                    <h1 class="text-white flex items-center text-2xl font-bold">Maps DC </h1>
+                <img src="/img/logo_transparent.png" class="logo-nav" srcset=""> 
+                <h1 class="text-white flex items-center text-2xl font-bold">Maps DC</h1>
             </div>
         </a>
         <nav>
             <ul class="flex space-x-5">
-                <li><a href="Login" class="color-white hover:underline">Login</a></li>
+                <li><a href="/register" class="logged-out bg-white p-2 rounded-lg text-primary-300 hover:underline">Criar Conta</a></li>
+                <li><a href="/login" class="logged-out text-white hover:underline">Login</a></li>
+
+                <li class="user-menu" style="display: none;">
+                    <span id="user-greeting" class="text-white"></span>
+                </li>
+                <li class="user-menu" style="display: none;">
+                    <a href="#" onclick="logout()" class="text-white hover:underline">Logout</a>
+                </li>
             </ul>
         </nav>
     </div>
 </header>
+
+<script>
+    // Verifica se o usuário está logado
+    window.addEventListener('DOMContentLoaded', () => {
+        const loggedUser = JSON.parse(localStorage.getItem('user'));
+        const userMenu = document.querySelectorAll('.user-menu');
+        const loggedOutMenu = document.querySelectorAll('.logged-out');
+        const userGreeting = document.getElementById('user-greeting');
+
+        if (loggedUser) {
+            userGreeting.textContent = `${loggedUser.email}`; // Exibe o email do usuário
+
+            userMenu.forEach(e =>{
+                e.style.display = 'flex'; // Mostra o menu do usuário
+            })
+
+            loggedOutMenu.forEach(e => {
+                e.style.display = 'none'; // Mostra o menu do usuário
+            })
+        }
+    });
+
+    function logout() {
+        firebase.auth().signOut().then(() => {
+            localStorage.removeItem('user'); // Remove o usuário do localStorage
+            window.location.href = '/login'; // Redireciona para a tela de login
+        }).catch((error) => {
+            console.error("Erro ao sair: ", error);
+        });
+    }
+</script>

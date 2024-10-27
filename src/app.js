@@ -4,6 +4,14 @@ const cors = require('cors');
 const path = require('path');
 const app = express();
 const views = require('./routes/views/routes');
+const auth = require('./routes/api/auth');
+
+const session = require('express-session');
+app.use(session({
+    secret: 'key',
+    resave: false,
+    saveUninitialized: true,
+}));
 
 // Configuração do handlebars
 const exphbs = require('express-handlebars');
@@ -26,6 +34,9 @@ app.use(express.json());
 
 app.get('/', (req, res) => res.render('index', { title: 'Maps DC' }));
 app.use(views);
+
+// API
+app.use(auth);
 
 // Erro 404
 app.use((req, res, next) => {

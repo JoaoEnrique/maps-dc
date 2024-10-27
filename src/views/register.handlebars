@@ -1,0 +1,70 @@
+<main class="container mx-auto px-56">
+    <form id="signupForm" class="bg-white px-10 pb-10 pt-10 mx-auto">
+        <h1 class="text-center text-4xl mb-10">Criar Conta</h1>
+
+        <div class="mb-5">
+            <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
+            <input type="email" id="email" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-300 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-300 dark:focus:border-primary-300" placeholder="nome@gmail.com" required />
+        </div>
+        <div class="mb-5">
+            <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Senha</label>
+            <input type="password" id="password" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required />
+        </div>
+        <button type="submit" class="text-white bg-blue-500 hover:bg-blue-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">Criar Conta</button>
+    </form>
+
+    <script>
+        // Verifica se o usuário já está logado ao carregar a página
+        window.addEventListener('DOMContentLoaded', () => {
+            const loggedUser = JSON.parse(localStorage.getItem('user'));
+            if (loggedUser) {
+                window.location.href = '/'; // Redireciona se o usuário já estiver logado
+            }
+        });
+
+        // Função para autenticação e armazenamento no localStorage
+        async function authenticateUser(email, password) {
+            const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
+            const user = userCredential.user;
+            localStorage.setItem('user', JSON.stringify({ uid: user.uid, email: user.email })); // Salva o usuário no localStorage
+            return user;
+        }
+
+        // Captura o evento de envio do formulário
+        document.getElementById('signupForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                // Faz a requisição para criar o usuário no back-end
+                const response = await fetch('/signup', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    document.querySelector(".error-message").style.display = 'block';
+                    document.querySelector(".success-message").style.display = 'none';
+                    document.querySelector(".error-message-text").innerHTML = error.error;
+                    return;
+                }
+
+                // Autentica automaticamente o usuário no front-end e armazena no localStorage
+                await authenticateUser(email, password);
+                document.querySelector(".success-message").style.display = 'block';
+                document.querySelector(".error-message").style.display = 'none';
+                document.querySelector(".success-message-text").innerHTML = "Conta criada";
+                window.location.href = '/';
+
+            } catch (error) {
+                document.querySelector(".error-message").style.display = 'block';
+                document.querySelector(".success-message").style.display = 'none';
+                document.querySelector(".error-message-text").innerHTML = error.message;
+            }
+        });
+    </script>
+</main>
