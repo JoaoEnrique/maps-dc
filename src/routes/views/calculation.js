@@ -13,6 +13,7 @@ router.get('/calculations/new', (req, res) => {
     res.render('calculations/register', { 
         title: 'Maps DC - Novo calculo', 
         API_KEY_MAPS: process.env.API_KEY_MAPS,
+        API_KEY_OPEN_WEATHER: process.env.API_KEY_OPEN_WEATHER,
         isEdit: false,
 
         // valores padrão
