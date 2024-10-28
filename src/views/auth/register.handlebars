@@ -20,7 +20,7 @@
         import { errorMessage, successMessage } from '/js/utils/message.js';
 
         // Verifica se o usuário já está logado ao carregar a página
-        window.addEventListener('DOMContentLoaded', () => {
+        window.addEventListener('DOMContentLoaded', async() => {
             if (isLoggedUser()) {
                 window.location.href = '/'; // Redireciona se o usuário já estiver logado
             }

@@ -13,7 +13,7 @@ router.get('/login', (req, res) => {
     if (token) {
         res.status(301).redirect('/');
     } else {
-        res.render('login', { title: 'Maps DC - Login', errorMessage, successMessage });
+        res.render('auth/login', { title: 'Maps DC - Login', errorMessage, successMessage });
     }
 })
 
@@ -22,8 +22,12 @@ router.get('/register', (req, res) => {
     if (token) {
         res.status(301).redirect('/');
     } else {
-        res.render('register', { title: 'Maps DC - Criar Conta' });
+        res.render('auth/register', { title: 'Maps DC - Criar Conta' });
     }
+})
+
+router.get('/account', (req, res) => {
+    res.render('auth/account', { title: 'Maps DC - Conta' });
 })
 
 module.exports = router;

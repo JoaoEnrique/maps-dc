@@ -22,12 +22,12 @@ function formatarFloat(numero) {
 }
 
 //  caso o orçamento já exista, pega os valores
-function calcularCombustivel(){
+function calcularCombustivel() {
   var travelMode = document.getElementById("locomocao").value;
   var origem = document.getElementById("origem").value;
   var destino = document.getElementById("destino").value;
-  let consumo_combustivel = isNaN(parseFloat($("#consumo_combustivel").val())) ? 0 : parseFloat(formatarFloat($("#consumo_combustivel").val()))
-  let preco_combustivel = isNaN(parseFloat($("#preco_combustivel").val())) ? 0 : parseFloat(formatarFloat($("#preco_combustivel").val()))
+  let consumo_combustivel = isNaN(parseFloat($("#consumo_combustivel").val())) ? 0 : parseFloat(formatarFloat($("#consumo_combustivel").val()));
+  let preco_combustivel = isNaN(parseFloat($("#preco_combustivel").val())) ? 0 : parseFloat(formatarFloat($("#preco_combustivel").val()));
 
   if (origem != "" && destino != "" && consumo_combustivel != "" && preco_combustivel != "") {
       var directionsService = new google.maps.DirectionsService();
@@ -41,21 +41,23 @@ function calcularCombustivel(){
           if (status == "OK") {
               directionsRenderer.setDirections(result);
 
-              var distancia = result.routes[0].legs[0].distance.value / 1000;
-              var distanciaIdaVolta = distancia * 2;
-              var consumoCombustivel = distancia / consumo_combustivel;
-              var valorCombustivel = consumoCombustivel * preco_combustivel;
-              var valorCombustivelIdaVolta = valorCombustivel * 2;
+              var distancia = result.routes[0].legs[0].distance.value / 1000; // distância em km
+              var distanciaIdaVolta = distancia * 2; // calcular ida e volta
+              var consumoCombustivel = distancia / consumo_combustivel; // calcular consumo
+              var valorCombustivel = consumoCombustivel * preco_combustivel; // custo total
+              var valorCombustivelIdaVolta = valorCombustivel * 2; // custo ida e volta
+              var duracao = result.routes[0].legs[0].duration.value / 60; // duração em minutos
 
-              mostrarPrecoCombustivel(distancia, distanciaIdaVolta, consumoCombustivel, valorCombustivelIdaVolta, valorCombustivel, travelMode)
-
+              // Certifique-se de que está chamando a função correta para exibir os resultados
+              mostrarPrecoCombustivel(distancia, distanciaIdaVolta, consumoCombustivel, valorCombustivelIdaVolta, valorCombustivel, travelMode, duracao);
           } else {
               console.error("Não foi possível calcular a rota.");
           }
       });
   }
 }
-calcularCombustivel()
+
+calcularCombustivel();
 
 
 function initAutocomplete() {
@@ -205,10 +207,11 @@ function formatarComoMoeada(numero) {
     return numero;
 }
 
-function mostrarPrecoCombustivel(distancia, distanciaIdaVolta, consumoCombustivel, valorCombustivelIdaVolta, valorCombustivel, travelMode){
+function mostrarPrecoCombustivel(distancia, distanciaIdaVolta, consumoCombustivel, valorCombustivelIdaVolta, valorCombustivel, travelMode, duracao){
     document.getElementById("resultado").innerHTML = `
             <p>Distância:  <b>${formatarComoMoeada(distancia.toFixed(2))} KM</b></p>
             <p>Distância (Ida e Volta):  <b>${formatarComoMoeada(distanciaIdaVolta.toFixed(2))} KM</b></p>
+            <p>Tempo estimado: <b>${Math.floor(duracao)} minutos</b></p> <!-- Exibe o tempo estimado de viagem -->
         `
 
       if(travelMode == "DRIVING"){
@@ -219,6 +222,7 @@ function mostrarPrecoCombustivel(distancia, distanciaIdaVolta, consumoCombustive
         `
       }
 
+    $("#duracao").val(duracao);
     $("#distancia").val(distancia);
     $("#distancia_ida_volta").val(distanciaIdaVolta);
 
