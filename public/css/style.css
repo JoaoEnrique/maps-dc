@@ -19,3 +19,8 @@ main{
 .ul-nav a:hover{
     opacity: 0.5;
 }
+
+.menu{
+    border-radius: 15px;
+    margin: 0 20px;
+}
