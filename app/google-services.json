@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "176624554321",
+    "project_id": "maps-dc-c098d",
+    "storage_bucket": "maps-dc-c098d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:176624554321:android:f9bf4fb267d306162d4370",
+        "android_client_info": {
+          "package_name": "com.example.mapsdc"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "176624554321-4kaqrm9n705j8tgtuf2sudtjj3hk6pea.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBxGjhq0h1sJ2lJ8VGAnGCtw3bhUHXdFF4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "176624554321-4kaqrm9n705j8tgtuf2sudtjj3hk6pea.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
