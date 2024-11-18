@@ -1,3 +1,9 @@
+<img width="1728" alt="Screenshot 2024-11-18 at 17 30 03" src="https://github.com/user-attachments/assets/7bb40a7b-cf86-4a2e-b2ef-b84e7dac7066">
+
+<img width="1728" alt="Screenshot 2024-11-18 at 17 32 41" src="https://github.com/user-attachments/assets/8c1df721-a359-403f-b509-d9ea5fe42e2c">
+
+
+
 # Calculadora de Combustível e Estimativa de Rota com Google Maps
 
 
