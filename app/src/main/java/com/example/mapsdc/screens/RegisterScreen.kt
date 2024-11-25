@@ -88,7 +88,7 @@ fun RegisterScreen(navController: NavController) {
                         }
                     }
             },
-            text = "Login"
+            text = "Cadastrar"
         )
 
         Link("login", "Já tem uma conta? Faça login", navController)

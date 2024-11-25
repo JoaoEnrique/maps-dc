@@ -1,32 +1,28 @@
 package com.example.mapsdc.screens.maps
 
 import android.util.Log
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material3.Button
-import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
@@ -35,7 +31,6 @@ import androidx.navigation.NavController
 import com.example.mapsdc.components.ModalDrawerWithContent
 import com.example.mapsdc.utils.formatNumber
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.coroutines.launch
 
 @Composable
 fun ListScreen(navController: NavController, userId: String) {
@@ -47,10 +42,13 @@ fun ListScreen(navController: NavController, userId: String) {
     )
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ListScreenContent(navController: NavController, userId: String) {
     val calculations = remember { mutableStateOf<List<Calculation>>(emptyList()) }
     val firestore = FirebaseFirestore.getInstance()
+    val (selectedCalculation, setSelectedCalculation) = remember { mutableStateOf<Calculation?>(null) }
+    val isModalVisible = remember { mutableStateOf(false) }
 
     LaunchedEffect(userId) {
         firestore.collection("calculations")
@@ -84,6 +82,42 @@ fun ListScreenContent(navController: NavController, userId: String) {
                 Log.e("ListScreen", "Erro ao buscar cálculos", exception)
             }
     }
+
+    if (isModalVisible.value) {
+        AlertDialog(
+            onDismissRequest = { isModalVisible.value = false },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        // Exclua o cálculo no Firestore
+                        selectedCalculation?.let { calculation ->
+                            firestore.collection("calculations").document(calculation.id)
+                                .delete()
+                                .addOnSuccessListener {
+                                    calculations.value =
+                                        calculations.value.filterNot { it.id == calculation.id }
+                                    isModalVisible.value = false
+                                }
+                                .addOnFailureListener { exception ->
+                                    Log.e("ListScreen", "Erro ao excluir cálculo", exception)
+                                    isModalVisible.value = false
+                                }
+                        }
+                    }
+                ) {
+                    Text("Excluir")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { isModalVisible.value = false }) {
+                    Text("Cancelar")
+                }
+            },
+            title = { Text("Confirmação") },
+            text = { Text("Tem certeza que deseja excluir este cálculo?") }
+        )
+    }
+
 
     Column(
         Modifier.padding(16.dp, 40.dp)
@@ -151,7 +185,15 @@ fun ListScreenContent(navController: NavController, userId: String) {
                         }
                     },
                     leadingContent = { Icon(Icons.Filled.LocationOn, contentDescription = null) },
-                    modifier = Modifier.clickable {  }.background(Color.Red)
+                    modifier = Modifier.combinedClickable(
+                        onClick = {
+                            // Ação para clique curto (opcional)
+                        },
+                        onLongClick = {
+                            setSelectedCalculation(calculation)
+                            isModalVisible.value = true
+                        }
+                    )
                 )
             }
         }
